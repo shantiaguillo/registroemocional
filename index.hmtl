@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input, button {
+    padding: 8px;
+    font-size: 14px;
+}
+
+button {
+    grid-column: span 3;
+    background-color: #2d89ef;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1b5fad;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #2d89ef;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Inventario</h1>
+
+<form id="inventoryForm">
+    <input type="text" id="id" placeholder="ID" required>
+    <input type="text" id="name" placeholder="Nombre" required>
+    <input type="text" id="category" placeholder="Categoría" required>
+    <input type="number" id="quantity" placeholder="Cantidad" required>
+    <input type="number" id="price" placeholder="Precio" required>
+    <input type="date" id="date" required>
+    <button type="submit">Agregar Producto</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody id="inventoryTable">
+    </tbody>
+</table>
+
+<script>
+const form = document.getElementById("inventoryForm");
+const table = document.getElementById("inventoryTable");
+
+document.addEventListener("DOMContentLoaded", loadData);
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const product = {
+        id: document.getElementById("id").value,
+        name: document.getElementById("name").value,
+        category: document.getElementById("category").value,
+        quantity: document.getElementById("quantity").value,
+        price: document.getElementById("price").value,
+        date: document.getElementById("date").value
+    };
+
+    saveData(product);
+    addRow(product);
+    form.reset();
+});
+
+function addRow(product) {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${product.id}</td>
+        <td>${product.name}</td>
+        <td>${product.category}</td>
+        <td>${product.quantity}</td>
+        <td>$${product.price}</td>
+        <td>${product.date}</td>
+    `;
+
+    table.appendChild(row);
+}
+
+function saveData(product) {
+    let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+    inventory.push(product);
+    localStorage.setItem("inventory", JSON.stringify(inventory));
+}
+
+function loadData() {
+    let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+    inventory.forEach(addRow);
+}
+</script>
+
+</body>
+</html>
