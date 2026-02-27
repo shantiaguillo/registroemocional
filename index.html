@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inventario</title>
+<title>RegistroEmocional</title>
 
 <style>
 body {
@@ -61,26 +61,26 @@ th {
 
 <body>
 
-<h1>Inventario</h1>
+<h1>Registro Emocional Diario</h1>
 
 <form id="inventoryForm">
-    <input type="text" id="id" placeholder="ID" required>
-    <input type="text" id="name" placeholder="Nombre" required>
-    <input type="text" id="category" placeholder="Categoría" required>
-    <input type="number" id="quantity" placeholder="Cantidad" required>
-    <input type="number" id="price" placeholder="Precio" required>
+    <input type="text" id="sit" placeholder="Situación" required>
+    <input type="text" id="pen" placeholder="Pensamiento" required>
+    <input type="text" id="senfis" placeholder="Sensación Física" required>
+    <input type="text" id="emo" placeholder="Emoción" required>
+    <input type="text" id="ints" placeholder="Intensidad" required>
     <input type="date" id="date" required>
-    <button type="submit">Agregar Producto</button>
+    <button type="submit">Agregar Registro</button>
 </form>
 
 <table>
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
+            <th>Situación</th>
+            <th>Pensamiento</th>
+            <th>Sensación Fisica</th>
+            <th>Emoción</th>
+            <th>Intensidad</th>
             <th>Fecha</th>
         </tr>
     </thead>
@@ -98,11 +98,11 @@ form.addEventListener("submit", function(e) {
     e.preventDefault();
 
     const product = {
-        id: document.getElementById("id").value,
-        name: document.getElementById("name").value,
-        category: document.getElementById("category").value,
-        quantity: document.getElementById("quantity").value,
-        price: document.getElementById("price").value,
+        sit: document.getElementById("sit").value,
+        pen: document.getElementById("pen").value,
+        senfis: document.getElementById("senfis").value,
+        emo: document.getElementById("emo").value,
+        ints: document.getElementById("ints").value,
         date: document.getElementById("date").value
     };
 
@@ -115,11 +115,11 @@ function addRow(product) {
     const row = document.createElement("tr");
 
     row.innerHTML = `
-        <td>${product.id}</td>
-        <td>${product.name}</td>
-        <td>${product.category}</td>
-        <td>${product.quantity}</td>
-        <td>$${product.price}</td>
+        <td>${product.sit}</td>
+        <td>${product.pen}</td>
+        <td>${product.senfis}</td>
+        <td>${product.emo}</td>
+        <td>$${product.ints}</td>
         <td>${product.date}</td>
     `;
 
