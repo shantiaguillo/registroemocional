@@ -9,23 +9,25 @@
 body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     background-color: #e8f5e9;
-    padding: 30px;
+    padding: 15px;
+    margin: 0;
     color: #2e4d3d;
 }
 
 h1 {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     color: #1b4332;
 }
 
+/* FORMULARIO RESPONSIVE */
 form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
     background: #ffffff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
@@ -38,7 +40,6 @@ input, select, button {
 }
 
 button {
-    grid-column: span 2;
     background-color: #66bb6a;
     color: white;
     border: none;
@@ -53,7 +54,8 @@ button:hover {
 
 .edit-btn {
     background-color: #81c784;
-    padding: 6px 10px;
+    margin-right: 5px;
+    padding: 6px 8px;
     font-size: 12px;
 }
 
@@ -61,8 +63,24 @@ button:hover {
     background-color: #66bb6a;
 }
 
+.delete-btn {
+    background-color: #e57373;
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
+.delete-btn:hover {
+    background-color: #c62828;
+}
+
+/* TABLA RESPONSIVE */
+.table-container {
+    overflow-x: auto;
+}
+
 table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
     background: white;
     border-radius: 12px;
@@ -71,8 +89,9 @@ table {
 }
 
 th, td {
-    padding: 12px;
+    padding: 10px;
     text-align: center;
+    font-size: 13px;
 }
 
 th {
@@ -87,6 +106,13 @@ tr:nth-child(even) {
 .leve { color: #2e7d32; font-weight: bold; }
 .moderado { color: #f9a825; font-weight: bold; }
 .intenso { color: #c62828; font-weight: bold; }
+
+/* BOTONES FULL WIDTH EN MÓVIL */
+@media (max-width: 600px) {
+    button {
+        width: 100%;
+    }
+}
 </style>
 </head>
 
@@ -97,10 +123,10 @@ tr:nth-child(even) {
 <form id="inventoryForm" autocomplete="off">
     <input type="hidden" id="editIndex">
 
-    <input type="text" id="sit" placeholder="Situación" required autocomplete="off">
-    <input type="text" id="pen" placeholder="Pensamiento" required autocomplete="off">
-    <input type="text" id="senfis" placeholder="Sensación Física" required autocomplete="off">
-    <input type="text" id="emo" placeholder="Emoción" required autocomplete="off">
+    <input type="text" id="sit" placeholder="Situación" required>
+    <input type="text" id="pen" placeholder="Pensamiento" required>
+    <input type="text" id="senfis" placeholder="Sensación Física" required>
+    <input type="text" id="emo" placeholder="Emoción" required>
 
     <select id="ints" required>
         <option value="">Intensidad</option>
@@ -112,9 +138,10 @@ tr:nth-child(even) {
     <input type="date" id="date" required>
 
     <button type="submit" id="submitBtn">Guardar Registro</button>
-    <button type="button" onclick="downloadPDF()">Finalizar Día y Descargar PDF 🌿</button>
+    <button type="button" onclick="downloadPDF()">Descargar PDF 🌿</button>
 </form>
 
+<div class="table-container">
 <table>
     <thead>
         <tr>
@@ -124,13 +151,14 @@ tr:nth-child(even) {
             <th>Emoción</th>
             <th>Intensidad</th>
             <th>Fecha</th>
-            <th>Editar</th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody id="inventoryTable"></tbody>
 </table>
+</div>
 
-<!-- Librerías para PDF -->
+<!-- Librerías PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -178,14 +206,7 @@ function loadData() {
 function addRow(record, index) {
     const row = document.createElement("tr");
 
-    const fields = [
-        record.sit,
-        record.pen,
-        record.senfis,
-        record.emo
-    ];
-
-    fields.forEach(value => {
+    [record.sit, record.pen, record.senfis, record.emo].forEach(value => {
         const cell = document.createElement("td");
         cell.textContent = value;
         row.appendChild(cell);
@@ -193,25 +214,29 @@ function addRow(record, index) {
 
     const intensityCell = document.createElement("td");
     intensityCell.textContent = record.ints;
-
-    if (record.ints === "Leve") intensityCell.classList.add("leve");
-    if (record.ints === "Moderado") intensityCell.classList.add("moderado");
-    if (record.ints === "Intenso") intensityCell.classList.add("intenso");
-
+    intensityCell.classList.add(record.ints.toLowerCase());
     row.appendChild(intensityCell);
 
     const dateCell = document.createElement("td");
     dateCell.textContent = record.date;
     row.appendChild(dateCell);
 
-    const editCell = document.createElement("td");
+    const actionCell = document.createElement("td");
+
     const editBtn = document.createElement("button");
     editBtn.textContent = "Editar";
     editBtn.classList.add("edit-btn");
     editBtn.onclick = () => editRecord(index);
-    editCell.appendChild(editBtn);
-    row.appendChild(editCell);
 
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Eliminar";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.onclick = () => deleteRecord(index);
+
+    actionCell.appendChild(editBtn);
+    actionCell.appendChild(deleteBtn);
+
+    row.appendChild(actionCell);
     table.appendChild(row);
 }
 
@@ -231,9 +256,18 @@ function editRecord(index) {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function downloadPDF() {
+function deleteRecord(index) {
     let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
 
+    if (confirm("¿Seguro que deseas eliminar este registro? 🌿")) {
+        data.splice(index, 1);
+        localStorage.setItem("emotionalRecords", JSON.stringify(data));
+        loadData();
+    }
+}
+
+function downloadPDF() {
+    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
     const today = new Date().toISOString().split("T")[0];
     const dailyData = data.filter(record => record.date === today);
 
@@ -251,18 +285,7 @@ function downloadPDF() {
     doc.text(`Fecha: ${today}`, 14, 28);
 
     const tableColumn = ["Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
-    const tableRows = [];
-
-    dailyData.forEach(record => {
-        const row = [
-            record.sit,
-            record.pen,
-            record.senfis,
-            record.emo,
-            record.ints
-        ];
-        tableRows.push(row);
-    });
+    const tableRows = dailyData.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
 
     doc.autoTable({
         head: [tableColumn],
@@ -270,7 +293,7 @@ function downloadPDF() {
         startY: 35,
         theme: "grid",
         headStyles: { fillColor: [129, 199, 132] },
-        styles: { fontSize: 10 }
+        styles: { fontSize: 9 }
     });
 
     doc.save(`registro_emocional_${today}.pdf`);
