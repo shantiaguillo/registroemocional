@@ -4,123 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registro Emocional</title>
+
+<!-- Favicon -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌿</text></svg>">
 
-<style>
-body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background-color: #e8f5e9;
-    padding: 15px;
-    margin: 0;
-    color: #2e4d3d;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #1b4332;
-}
-
-/* FORMULARIO RESPONSIVE */
-form {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    margin-bottom: 25px;
-    background: #ffffff;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-input, select, button {
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid #c8e6c9;
-}
-
-button {
-    background-color: #66bb6a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-button:hover {
-    background-color: #4caf50;
-}
-
-.edit-btn {
-    background-color: #81c784;
-    margin-right: 5px;
-    padding: 6px 8px;
-    font-size: 12px;
-}
-
-.edit-btn:hover {
-    background-color: #66bb6a;
-}
-
-.delete-btn {
-    background-color: #e57373;
-    padding: 6px 8px;
-    font-size: 12px;
-}
-
-.delete-btn:hover {
-    background-color: #c62828;
-}
-
-/* TABLA RESPONSIVE */
-.table-container {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    min-width: 700px;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-th, td {
-    padding: 10px;
-    text-align: center;
-    font-size: 13px;
-}
-
-th {
-    background-color: #81c784;
-    color: white;
-}
-
-tr:nth-child(even) {
-    background-color: #f1f8f4;
-}
-
-.leve { color: #2e7d32; font-weight: bold; }
-.moderado { color: #f9a825; font-weight: bold; }
-.intenso { color: #c62828; font-weight: bold; }
-
-/* BOTONES FULL WIDTH EN MÓVIL */
-@media (max-width: 600px) {
-    button {
-        width: 100%;
-    }
-}
-</style>
+<!-- CSS -->
+<link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
 
 <h1>Registro Emocional Diario 🌿</h1>
 
+<div style="text-align:center; margin-bottom:15px;">
+    <button onclick="toggleDarkMode()" id="darkToggle">🌙 Modo Oscuro</button>
+</div>
+    
 <form id="inventoryForm" autocomplete="off">
     <input type="hidden" id="editIndex">
 
@@ -139,7 +38,7 @@ tr:nth-child(even) {
     <input type="date" id="date" required>
 
     <button type="submit" id="submitBtn">Guardar Registro</button>
-    <button type="button" onclick="downloadPDF()">Descargar PDF 🌿</button>
+    <button type="button" id="downloadBtn">Descargar PDF 🌿</button>
 </form>
 
 <div class="table-container">
@@ -163,143 +62,8 @@ tr:nth-child(even) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-<script>
-const form = document.getElementById("inventoryForm");
-const table = document.getElementById("inventoryTable");
-const submitBtn = document.getElementById("submitBtn");
-const editIndexInput = document.getElementById("editIndex");
-
-document.addEventListener("DOMContentLoaded", loadData);
-
-form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const record = {
-        sit: sit.value,
-        pen: pen.value,
-        senfis: senfis.value,
-        emo: emo.value,
-        ints: ints.value,
-        date: date.value
-    };
-
-    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
-
-    if (editIndexInput.value === "") {
-        data.push(record);
-    } else {
-        data[editIndexInput.value] = record;
-        editIndexInput.value = "";
-        submitBtn.textContent = "Guardar Registro";
-    }
-
-    localStorage.setItem("emotionalRecords", JSON.stringify(data));
-    form.reset();
-    loadData();
-});
-
-function loadData() {
-    table.innerHTML = "";
-    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
-    data.forEach((record, index) => addRow(record, index));
-}
-
-function addRow(record, index) {
-    const row = document.createElement("tr");
-
-    [record.sit, record.pen, record.senfis, record.emo].forEach(value => {
-        const cell = document.createElement("td");
-        cell.textContent = value;
-        row.appendChild(cell);
-    });
-
-    const intensityCell = document.createElement("td");
-    intensityCell.textContent = record.ints;
-    intensityCell.classList.add(record.ints.toLowerCase());
-    row.appendChild(intensityCell);
-
-    const dateCell = document.createElement("td");
-    dateCell.textContent = record.date;
-    row.appendChild(dateCell);
-
-    const actionCell = document.createElement("td");
-
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Editar";
-    editBtn.classList.add("edit-btn");
-    editBtn.onclick = () => editRecord(index);
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Eliminar";
-    deleteBtn.classList.add("delete-btn");
-    deleteBtn.onclick = () => deleteRecord(index);
-
-    actionCell.appendChild(editBtn);
-    actionCell.appendChild(deleteBtn);
-
-    row.appendChild(actionCell);
-    table.appendChild(row);
-}
-
-function editRecord(index) {
-    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
-    const record = data[index];
-
-    sit.value = record.sit;
-    pen.value = record.pen;
-    senfis.value = record.senfis;
-    emo.value = record.emo;
-    ints.value = record.ints;
-    date.value = record.date;
-
-    editIndexInput.value = index;
-    submitBtn.textContent = "Actualizar Registro";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function deleteRecord(index) {
-    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
-
-    if (confirm("¿Seguro que deseas eliminar este registro? 🌿")) {
-        data.splice(index, 1);
-        localStorage.setItem("emotionalRecords", JSON.stringify(data));
-        loadData();
-    }
-}
-
-function downloadPDF() {
-    let data = JSON.parse(localStorage.getItem("emotionalRecords")) || [];
-    const today = new Date().toISOString().split("T")[0];
-    const dailyData = data.filter(record => record.date === today);
-
-    if (dailyData.length === 0) {
-        alert("No hay registros del día de hoy 🌿");
-        return;
-    }
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    doc.setFontSize(18);
-    doc.text("Registro Emocional Diario", 14, 20);
-    doc.setFontSize(12);
-    doc.text(`Fecha: ${today}`, 14, 28);
-
-    const tableColumn = ["Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
-    const tableRows = dailyData.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
-
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 35,
-        theme: "grid",
-        headStyles: { fillColor: [129, 199, 132] },
-        styles: { fontSize: 9 }
-    });
-
-    doc.save(`registro_emocional_${today}.pdf`);
-}
-</script>
+<!-- JS -->
+<script src="js/app.js"></script>
 
 </body>
 </html>
