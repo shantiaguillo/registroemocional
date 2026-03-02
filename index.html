@@ -63,7 +63,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <!-- JS -->
-<script src="js/app.js"></script>
+<script src="js/app.js">
+    // MODO OSCURO
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark);
+
+    document.getElementById("darkToggle").textContent =
+        isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
+}
+
+// Cargar preferencia guardada
+window.addEventListener("DOMContentLoaded", () => {
+    const darkSaved = localStorage.getItem("darkMode") === "true";
+    if (darkSaved) {
+        document.body.classList.add("dark");
+        document.getElementById("darkToggle").textContent = "☀️ Modo Claro";
+    }
+});
+</script>
 
 </body>
 </html>
