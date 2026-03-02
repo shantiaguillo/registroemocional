@@ -16,10 +16,10 @@
 
 <h1>Registro Emocional Diario 🌿</h1>
 
-<div style="text-align:center; margin-bottom:15px;">
-    <button onclick="toggleDarkMode()" id="darkToggle">🌙 Modo Oscuro</button>
+<div class="toggle-container">
+    <button id="darkToggle">🌙 Modo Oscuro</button>
 </div>
-    
+
 <form id="inventoryForm" autocomplete="off">
     <input type="hidden" id="editIndex">
 
@@ -63,27 +63,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <!-- JS -->
-<script src="js/app.js">
-    // MODO OSCURO
-function toggleDarkMode() {
-    document.body.classList.toggle("dark");
-
-    const isDark = document.body.classList.contains("dark");
-    localStorage.setItem("darkMode", isDark);
-
-    document.getElementById("darkToggle").textContent =
-        isDark ? "☀️ Modo Claro" : "🌙 Modo Oscuro";
-}
-
-// Cargar preferencia guardada
-window.addEventListener("DOMContentLoaded", () => {
-    const darkSaved = localStorage.getItem("darkMode") === "true";
-    if (darkSaved) {
-        document.body.classList.add("dark");
-        document.getElementById("darkToggle").textContent = "☀️ Modo Claro";
-    }
-});
-</script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
