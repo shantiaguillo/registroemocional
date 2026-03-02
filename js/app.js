@@ -5,8 +5,14 @@ const table = document.getElementById("inventoryTable");
 const submitBtn = document.getElementById("submitBtn");
 const editIndexInput = document.getElementById("editIndex");
 const downloadBtn = document.getElementById("downloadBtn");
+const darkToggle = document.getElementById("darkToggle");
 
 loadData();
+loadDarkMode();
+
+/* =========================
+   REGISTRO
+========================= */
 
 form.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -34,8 +40,6 @@ form.addEventListener("submit", function(e) {
     form.reset();
     loadData();
 });
-
-downloadBtn.addEventListener("click", downloadPDF);
 
 function getData() {
     return JSON.parse(localStorage.getItem("emotionalRecords")) || [];
@@ -108,6 +112,12 @@ function deleteRecord(index) {
     }
 }
 
+/* =========================
+   PDF
+========================= */
+
+downloadBtn.addEventListener("click", downloadPDF);
+
 function downloadPDF() {
     const data = getData();
     const today = new Date().toISOString().split("T")[0];
@@ -139,6 +149,31 @@ function downloadPDF() {
     });
 
     doc.save(`registro_emocional_${today}.pdf`);
+}
+
+/* =========================
+   MODO OSCURO
+========================= */
+
+darkToggle.addEventListener("click", toggleDarkMode);
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("darkMode", isDark);
+
+    darkToggle.textContent = isDark
+        ? "☀️ Modo Claro"
+        : "🌙 Modo Oscuro";
+}
+
+function loadDarkMode() {
+    const darkSaved = localStorage.getItem("darkMode") === "true";
+    if (darkSaved) {
+        document.body.classList.add("dark");
+        darkToggle.textContent = "☀️ Modo Claro";
+    }
 }
 
 });
