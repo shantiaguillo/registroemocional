@@ -126,21 +126,27 @@ function downloadPDF() {
         return;
     }
 
+    // 🔥 Ordenar por fecha (más reciente primero)
+    const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
 
-    doc.setFontSize(18);
-    doc.text("Historial de Registro Emocional", pageWidth / 2, 20, { align: "center" });
+    // Título
+    doc.setFontSize(20);
+    doc.setTextColor(40);
+    doc.text("Historial Emocional Personal", pageWidth / 2, 20, { align: "center" });
 
-    doc.setFontSize(12);
+    doc.setFontSize(11);
     doc.text(`Generado el: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: "center" });
 
-    // 🔥 Aquí usamos TODOS los registros, sin filtrar por fecha
+    // Tabla
     const tableColumn = ["Fecha", "Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
     
-    const tableRows = data.map(r => [
-        r.date,     // ← mantenemos la fecha
+    const tableRows = sortedData.map(r => [
+        r.date,
         r.sit,
         r.pen,
         r.senfis,
@@ -152,12 +158,22 @@ function downloadPDF() {
         head: [tableColumn],
         body: tableRows,
         startY: 35,
-        theme: "grid",
-        headStyles: { fillColor: [129, 199, 132] },
-        styles: { fontSize: 9 }
+        theme: "striped",
+        headStyles: { fillColor: [76, 175, 80] },
+        styles: { fontSize: 9 },
+        didDrawPage: function (data) {
+            // 🔥 Footer automático en cada página del PDF
+            doc.setFontSize(9);
+            doc.text(
+                "© Santiago 2026 - Registro Emocional Personal",
+                pageWidth / 2,
+                pageHeight - 10,
+                { align: "center" }
+            );
+        }
     });
 
-    doc.save("historial_completo_registro_emocional.pdf");
+    doc.save("historial_emocional_completo.pdf");
 }
    
 /* =========================
