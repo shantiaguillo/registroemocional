@@ -135,7 +135,7 @@ function downloadPDF() {
     doc.setFontSize(18);
     doc.text("Registro Emocional Diario", pageWidth / 2, 20, { align: "center" });
     doc.setFontSize(12);
-    doc.text(`Fecha: ${today}`, pageWidth / 2, 28, { align: "center" });
+    //doc.text(`Fecha: ${today}`, pageWidth / 2, 28, { align: "center" });
 
     const tableColumn = ["Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
     const tableRows = dailyData.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
@@ -149,7 +149,7 @@ function downloadPDF() {
         styles: { fontSize: 9 }
     });
 
-    doc.save(`registro_emocional_${today}.pdf`);
+    doc.save(`registro_emocional.pdf`);
 }
 
 /* =========================
