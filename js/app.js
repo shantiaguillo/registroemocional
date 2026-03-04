@@ -165,7 +165,7 @@ function downloadPDF() {
             // 🔥 Footer automático en cada página del PDF
             doc.setFontSize(9);
             doc.text(
-                "© Santiago 2026 - Registro Emocional Personal",
+                "© Santiago Armas 2026 - Registro Emocional Personal",
                 pageWidth / 2,
                 pageHeight - 10,
                 { align: "center" }
@@ -173,7 +173,7 @@ function downloadPDF() {
         }
     });
 
-    doc.save("historial_emocional_completo.pdf");
+    doc.save("historial_emocional.pdf");
 }
    
 /* =========================
