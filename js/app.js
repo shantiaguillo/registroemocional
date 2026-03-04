@@ -120,25 +120,33 @@ downloadBtn.addEventListener("click", downloadPDF);
 
 function downloadPDF() {
     const data = getData();
-    //const today = new Date().toISOString().split("T")[0];
-    //const dailyData = data.filter(record => record.date === today);
 
     if (data.length === 0) {
-        alert("No hay registros del día de hoy 🌿");
+        alert("No hay registros guardados 🌿");
         return;
     }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-   
-    doc.setFontSize(18);
-    doc.text("Registro Emocional Diario", pageWidth / 2, 20, { align: "center" });
-    doc.setFontSize(12);
-    //doc.text(`Fecha: ${today}`, pageWidth / 2, 28, { align: "center" });
 
-    const tableColumn = ["Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
-    const tableRows = data.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
+    doc.setFontSize(18);
+    doc.text("Historial de Registro Emocional", pageWidth / 2, 20, { align: "center" });
+
+    doc.setFontSize(12);
+    doc.text(`Generado el: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: "center" });
+
+    // 🔥 Aquí usamos TODOS los registros, sin filtrar por fecha
+    const tableColumn = ["Fecha", "Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
+    
+    const tableRows = data.map(r => [
+        r.date,     // ← mantenemos la fecha
+        r.sit,
+        r.pen,
+        r.senfis,
+        r.emo,
+        r.ints
+    ]);
 
     doc.autoTable({
         head: [tableColumn],
@@ -149,9 +157,9 @@ function downloadPDF() {
         styles: { fontSize: 9 }
     });
 
-    doc.save(`registro_emocional.pdf`);
+    doc.save("historial_completo_registro_emocional.pdf");
 }
-
+   
 /* =========================
    MODO OSCURO
 ========================= */
