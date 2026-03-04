@@ -138,7 +138,7 @@ function downloadPDF() {
     //doc.text(`Fecha: ${today}`, pageWidth / 2, 28, { align: "center" });
 
     const tableColumn = ["Situación", "Pensamiento", "Sensación Física", "Emoción", "Intensidad"];
-    const tableRows = dailyData.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
+    const tableRows = data.map(r => [r.sit, r.pen, r.senfis, r.emo, r.ints]);
 
     doc.autoTable({
         head: [tableColumn],
