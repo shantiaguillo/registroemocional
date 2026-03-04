@@ -123,7 +123,7 @@ function downloadPDF() {
     //const today = new Date().toISOString().split("T")[0];
     //const dailyData = data.filter(record => record.date === today);
 
-    if (dailyData.length === 0) {
+    if (data.length === 0) {
         alert("No hay registros del día de hoy 🌿");
         return;
     }
